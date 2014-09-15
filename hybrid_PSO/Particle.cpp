@@ -1,7 +1,4 @@
 #include "Particle.h"
-#include <iostream>
-#include <math.h>
-#include <random>
 
 Particle::Particle()
 {
@@ -20,7 +17,7 @@ void Particle::init(Swarm* swarm)
 	bestPosition = new double[motherSwarm->dimension];
 	velocity = new double[motherSwarm->dimension];
 
-	bestFitness = 77777; // TODO: max_double
+	bestFitness = std::numeric_limits<double>::max( );
 
 	std::random_device random;
     std::mt19937 gen(random());
@@ -47,13 +44,35 @@ void Particle::copyArray(double* src, double* dest)
 
 void Particle::update()
 {
+	int forcedMutationIndex = getRandomIndex();
+
 	for(int i=0; i<motherSwarm->dimension; i++)
 	{
-		if(motherSwarm->crossoverRatio > getRandomFactor())
+		if(motherSwarm->crossoverRatio > getRandomFactor() || i == forcedMutationIndex)
 		{
 			velocity[i] *= motherSwarm->inertiaWeight;
 			velocity[i] += motherSwarm->cognitiveWeight * getRandomFactor() * ( bestPosition[i] - position[i] );
 			velocity[i] += motherSwarm->socialWeight * getRandomFactor() * ( motherSwarm->swarmBest[i] - position[i] );
+
+			//hybrid part ---------------------------
+			if(motherSwarm->mutate)
+			{
+				int randomParticle1, randomParticle2;
+
+				do
+				{
+					randomParticle1 = getRandomIndex();
+				}while(randomParticle1 == i);
+
+				do
+				{
+					randomParticle2 = getRandomIndex();
+				}while(randomParticle2 == i || randomParticle2 == randomParticle1);
+
+				velocity[i] += motherSwarm->mutationWeight * getRandomFactor() * 
+					( motherSwarm->particles[randomParticle1].position[i] - motherSwarm->particles[randomParticle2].position[i]);
+			}
+			// -------------------------------------
 
 			if(abs(velocity[i]) > motherSwarm->max_velocity)
 			{
@@ -84,6 +103,21 @@ double Particle::getRandomFactor()
 	std::random_device random;
     std::mt19937 gen(random());
 	std::uniform_real_distribution<double> dis(0, 1);
+
+	double r;
+	do
+	{
+		r = dis(gen);
+	}while(r == 1);
+
+	return r;
+}
+
+int Particle::getRandomIndex()
+{
+	std::random_device random;
+    std::mt19937 gen(random());
+	std::uniform_int_distribution<int> dis(0, motherSwarm->size-1);
 
 	return dis(gen);
 }

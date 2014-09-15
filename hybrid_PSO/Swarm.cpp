@@ -1,24 +1,25 @@
 #include "Swarm.h"
-#include <iostream>
-#include <math.h>
 
 Swarm::Swarm(void)
 {
 	size = 100;
-	iterations = 2000;
+	iterations = 600;
 
 	min_x = 0;
 	max_x = 100;
-	dimension = 30;
+	dimension = 5;
 	max_velocity = 50;
 
-	inertiaWeight = 0.5;
-	cognitiveWeight = 1.49;
-	socialWeight = 1.49;
-	crossoverRatio = 1;
+	inertiaWeight = 0.7298;
+	cognitiveWeight = 1.49618;
+	socialWeight = 1.49618;
+	mutationWeight = 0.35;
+	crossoverRatio = 0.9;
+
+	mutate = false;
 
 	swarmBest = new double[dimension];
-	swarmBestFitness = 777777; // TODO: max_double
+	swarmBestFitness = std::numeric_limits<double>::max( );
 }
 
 Swarm::~Swarm(void)
@@ -27,7 +28,7 @@ Swarm::~Swarm(void)
 
 void Swarm::run()
 {
-	Particle* particles = new Particle[size];
+	particles = new Particle[size];
 
 	for(int i=0; i<size; i++)
 	{

@@ -20,10 +20,15 @@ public:
 	double inertiaWeight;
 	double cognitiveWeight;
 	double socialWeight;
+	double mutationWeight;
 
 	double crossoverRatio;
 
 	double* swarmBest;
 	double swarmBestFitness;
+
+	Particle* particles;
+
+	bool mutate;
 };
 

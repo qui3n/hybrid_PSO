@@ -1,17 +1,19 @@
-// hybrid_PSO.cpp : Defines the entry point for the console application.
-//
-
 #include "stdafx.h"
 #include "Swarm.h"
-#include "Particle.h"
-
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	Swarm swarm;
-	swarm.run();
+	bool m = true;
+	while(1)
+	{
+		std::cout << (m ? "mutating \n" : "NOT mutating");
+		Swarm swarm;
+		swarm.mutate = m;
+		swarm.run();
 
-	while(1);
+		m = !m;
+	}
+
 	return 0;
 }
 
