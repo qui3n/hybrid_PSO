@@ -1,4 +1,7 @@
 #include "Particle.h"
+#include <iostream>
+#include <math.h>
+#include <random>
 
 Particle::Particle()
 {
@@ -19,17 +22,12 @@ void Particle::init(Swarm* swarm)
 
 	bestFitness = std::numeric_limits<double>::max( );
 
-	std::random_device random;
-    std::mt19937 gen(random());
-	std::uniform_real_distribution<double> pos_dis(motherSwarm->min_x, motherSwarm->max_x);
-	std::uniform_real_distribution<double> vel_dis(-motherSwarm->max_velocity, motherSwarm->max_velocity);
-
 	for (int i = 0; i < motherSwarm->dimension; i++) 
 	{
-        position[i] = pos_dis(gen);
-		velocity[i] = vel_dis(gen);
+		position[i] = motherSwarm->getRandomPosition();
+		velocity[i] = motherSwarm->getRandomVelocity();
 		//std::cout << position[i] << " " << velocity[i] << "\n";
-    } 
+	} 
 
 	checkBest();
 }
@@ -44,15 +42,13 @@ void Particle::copyArray(double* src, double* dest)
 
 void Particle::update()
 {
-	int forcedMutationIndex = getRandomIndex();
-
 	for(int i=0; i<motherSwarm->dimension; i++)
 	{
-		if(motherSwarm->crossoverRatio > getRandomFactor() || i == forcedMutationIndex)
+		if(motherSwarm->crossoverRatio > motherSwarm->getRandomFactor() || !motherSwarm->mutate)
 		{
 			velocity[i] *= motherSwarm->inertiaWeight;
-			velocity[i] += motherSwarm->cognitiveWeight * getRandomFactor() * ( bestPosition[i] - position[i] );
-			velocity[i] += motherSwarm->socialWeight * getRandomFactor() * ( motherSwarm->swarmBest[i] - position[i] );
+			velocity[i] += motherSwarm->cognitiveWeight * motherSwarm->getRandomFactor() * ( bestPosition[i] - position[i] );
+			velocity[i] += motherSwarm->socialWeight * motherSwarm->getRandomFactor() * ( motherSwarm->swarmBest[i] - position[i] );
 
 			//hybrid part ---------------------------
 			if(motherSwarm->mutate)
@@ -61,15 +57,15 @@ void Particle::update()
 
 				do
 				{
-					randomParticle1 = getRandomIndex();
+					randomParticle1 = motherSwarm->getRandomIndex();
 				}while(randomParticle1 == i);
 
 				do
 				{
-					randomParticle2 = getRandomIndex();
+					randomParticle2 = motherSwarm->getRandomIndex();
 				}while(randomParticle2 == i || randomParticle2 == randomParticle1);
 
-				velocity[i] += motherSwarm->mutationWeight * getRandomFactor() * 
+				velocity[i] += motherSwarm->mutationWeight * motherSwarm->getRandomFactor() * 
 					( motherSwarm->particles[randomParticle1].position[i] - motherSwarm->particles[randomParticle2].position[i]);
 			}
 			// -------------------------------------
@@ -96,30 +92,6 @@ void Particle::update()
 	}
 
 	checkBest();
-}
-
-double Particle::getRandomFactor()
-{
-	std::random_device random;
-    std::mt19937 gen(random());
-	std::uniform_real_distribution<double> dis(0, 1);
-
-	double r;
-	do
-	{
-		r = dis(gen);
-	}while(r == 1);
-
-	return r;
-}
-
-int Particle::getRandomIndex()
-{
-	std::random_device random;
-    std::mt19937 gen(random());
-	std::uniform_int_distribution<int> dis(0, motherSwarm->size-1);
-
-	return dis(gen);
 }
 
 void Particle::checkBest()

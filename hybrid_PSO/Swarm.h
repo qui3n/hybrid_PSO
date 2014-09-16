@@ -1,6 +1,7 @@
 #pragma once
 class Particle;
 #include "Particle.h"
+#include <random>
 
 class Swarm
 {
@@ -9,6 +10,10 @@ public:
 	~Swarm(void);
 	void run();
 	double getFitness(Particle* p);
+	double getRandomPosition();
+	double getRandomVelocity();
+	double getRandomFactor();
+	int getRandomIndex();
 
 	int dimension;
 	int min_x, max_x, max_velocity;
@@ -30,5 +35,8 @@ public:
 	Particle* particles;
 
 	bool mutate;
-};
 
+	//random stuff
+	std::random_device random;
+    std::mt19937 randomGenerator;
+};

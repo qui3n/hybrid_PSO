@@ -3,7 +3,6 @@ class Swarm;
 #include "Swarm.h"
 #include <iostream>
 #include <math.h>
-#include <random>
 #include <limits>
 
 class Particle
@@ -23,8 +22,6 @@ public:
 private:
 	void Particle::copyArray(double* src, double* dest);
 	void Particle::checkBest();
-	double Particle::getRandomFactor();
-	int Particle::getRandomIndex();
 
 	Swarm* motherSwarm;
 };

@@ -3,17 +3,12 @@
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	bool m = true;
-	while(1)
-	{
-		std::cout << (m ? "mutating \n" : "NOT mutating");
-		Swarm swarm;
-		swarm.mutate = m;
-		swarm.run();
+	Swarm swarm;
+	swarm.run();
 
-		m = !m;
+	while(1){
+		//std::cout << swarm.getRandomPosition() << "\n";
 	}
-
 	return 0;
 }
 
