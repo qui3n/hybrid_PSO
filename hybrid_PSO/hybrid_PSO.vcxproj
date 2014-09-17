@@ -81,12 +81,14 @@
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Swarm.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="test_func.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="hybrid_PSO.cpp" />
     <ClCompile Include="Particle.cpp" />
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="Swarm.cpp" />
+    <ClCompile Include="test_func.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

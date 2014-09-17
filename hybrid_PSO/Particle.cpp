@@ -44,7 +44,7 @@ void Particle::update()
 {
 	for(int i=0; i<motherSwarm->dimension; i++)
 	{
-		if(motherSwarm->crossoverRatio > motherSwarm->getRandomFactor() || !motherSwarm->mutate)
+		if(motherSwarm->crossoverRatio > motherSwarm->getRandomFactor() || !motherSwarm->mutate || motherSwarm->forcedMutantIndex == i)
 		{
 			velocity[i] *= motherSwarm->inertiaWeight;
 			velocity[i] += motherSwarm->cognitiveWeight * motherSwarm->getRandomFactor() * ( bestPosition[i] - position[i] );
@@ -106,7 +106,7 @@ void Particle::checkBest()
 		{
 			motherSwarm->swarmBestFitness = bestFitness;
 			copyArray(bestPosition, motherSwarm->swarmBest);
-			std::cout << "New GLOBAL best! " << bestFitness << " (" << motherSwarm->currentIteration << ") \n";
+			//std::cout << "New GLOBAL best! " << bestFitness << " (" << motherSwarm->currentIteration << ") \n";
 		}
 	}
 }

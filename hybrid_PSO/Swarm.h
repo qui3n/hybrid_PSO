@@ -35,6 +35,10 @@ public:
 	Particle* particles;
 
 	bool mutate;
+	int forcedMutantIndex;
+
+private:
+	double* fitness;
 
 	//random stuff
 	std::random_device random;
