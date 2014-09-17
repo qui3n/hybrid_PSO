@@ -10,25 +10,22 @@ Swarm::Swarm(void)
 	: random()
 	, randomGenerator(std::mt19937(random()))
 {
-	//opzioni stormo
+	//swarm settings
 	size = 10;
 	iterations = 10000;
-	//opzioni campo delle soluzioni
+	//solution range
 	min_x = -100;
 	max_x = 100;
 	dimension = 10;
 	max_velocity = 100;
-	//opzioni PSO standard
+	//PSO settings
 	inertiaWeight = 0.7298;
 	cognitiveWeight = 1.49618;
 	socialWeight = 1.49618;
-	//opzioni della parte ibrida
+	//hybrid part settings
 	mutationWeight = 0.5;
 	crossoverRatio = 0.9;
 	mutate = false;
-
-	swarmBest = new double[dimension];
-	swarmBestFitness = std::numeric_limits<double>::max();
 }
 
 Swarm::~Swarm(void)
@@ -37,8 +34,10 @@ Swarm::~Swarm(void)
 
 void Swarm::run()
 {
+	swarmBest = new double[dimension];
 	particles = new Particle[size];
 	fitness = new double;
+	swarmBestFitness = std::numeric_limits<double>::max();
 	currentIteration = -1;
 
 	for(int i=0; i<size; i++)
@@ -75,7 +74,7 @@ double Swarm::getFitness(Particle* p)
 
 double Swarm::getFitness(Particle* p)
 {
-	test_func(p->position, fitness, dimension, 1, 7);
+	test_func(p->position, fitness, dimension, 1, 1); //l'ultimo int è il numero della funzione [1-28]
 
 	return fitness[0];
 }

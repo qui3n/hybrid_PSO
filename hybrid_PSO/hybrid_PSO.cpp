@@ -3,9 +3,9 @@
 
 int _tmain(int argc, _TCHAR* argv[])
 {
+	Swarm swarm;
 	while(1)
 	{
-		Swarm swarm;
 		swarm.run();
 	}
 	return 0;
