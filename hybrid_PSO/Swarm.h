@@ -43,4 +43,6 @@ private:
 	//random stuff
 	std::random_device random;
     std::mt19937 randomGenerator;
+
+	int functionNumber;
 };

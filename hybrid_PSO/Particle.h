@@ -16,7 +16,7 @@ public:
 
 	Particle();
 	~Particle(void);
-	void init(Swarm* swarm);
+	void init(Swarm* swarm, int);
 	void update();
 
 private:
@@ -24,5 +24,6 @@ private:
 	void Particle::checkBest();
 
 	Swarm* motherSwarm;
+	int index;
 };
 

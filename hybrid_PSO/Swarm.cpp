@@ -12,12 +12,12 @@ Swarm::Swarm(void)
 {
 	//swarm settings
 	size = 10;
-	iterations = 10000;
+	iterations = 20000;
 	//solution range
 	min_x = -100;
 	max_x = 100;
-	dimension = 10;
-	max_velocity = 100;
+	dimension = 2;
+	max_velocity = 50;
 	//PSO settings
 	inertiaWeight = 0.7298;
 	cognitiveWeight = 1.49618;
@@ -26,6 +26,8 @@ Swarm::Swarm(void)
 	mutationWeight = 0.5;
 	crossoverRatio = 0.9;
 	mutate = false;
+	//benchmark function
+	functionNumber = 5;
 }
 
 Swarm::~Swarm(void)
@@ -42,7 +44,7 @@ void Swarm::run()
 
 	for(int i=0; i<size; i++)
 	{
-		particles[i].init(this);
+		particles[i].init(this, i);
 	}
 	for(currentIteration=0; currentIteration<iterations; currentIteration++)
 	{
@@ -74,7 +76,7 @@ double Swarm::getFitness(Particle* p)
 
 double Swarm::getFitness(Particle* p)
 {
-	test_func(p->position, fitness, dimension, 1, 1); //l'ultimo int è il numero della funzione [1-28]
+	test_func(p->position, fitness, dimension, 1, functionNumber); //l'ultimo int è il numero della funzione [1-28]
 
 	return fitness[0];
 }

@@ -12,9 +12,10 @@ Particle::~Particle(void)
 {
 }
 
-void Particle::init(Swarm* swarm)
+void Particle::init(Swarm* swarm, int index)
 {
 	motherSwarm = swarm;
+	this->index = index;
 
 	position = new double[motherSwarm->dimension];
 	bestPosition = new double[motherSwarm->dimension];
@@ -42,9 +43,24 @@ void Particle::copyArray(double* src, double* dest)
 
 void Particle::update()
 {
+	//hybrid part ----------------------------
+	int randomParticle1, randomParticle2;
+	if(motherSwarm->mutate)
+	{
+		do
+		{
+			randomParticle1 = motherSwarm->getRandomIndex();
+		}while(randomParticle1 == index);
+
+		do
+		{
+			randomParticle2 = motherSwarm->getRandomIndex();
+		}while(randomParticle2 == index || randomParticle2 == randomParticle1);
+	}
+	// -------------------------------------
 	for(int i=0; i<motherSwarm->dimension; i++)
 	{
-		if(motherSwarm->crossoverRatio > motherSwarm->getRandomFactor() || !motherSwarm->mutate || motherSwarm->forcedMutantIndex == i)
+		if(motherSwarm->crossoverRatio > motherSwarm->getRandomFactor() || !motherSwarm->mutate)
 		{
 			velocity[i] *= motherSwarm->inertiaWeight;
 			velocity[i] += motherSwarm->cognitiveWeight * motherSwarm->getRandomFactor() * ( bestPosition[i] - position[i] );
@@ -53,18 +69,6 @@ void Particle::update()
 			//hybrid part ---------------------------
 			if(motherSwarm->mutate)
 			{
-				int randomParticle1, randomParticle2;
-
-				do
-				{
-					randomParticle1 = motherSwarm->getRandomIndex();
-				}while(randomParticle1 == i);
-
-				do
-				{
-					randomParticle2 = motherSwarm->getRandomIndex();
-				}while(randomParticle2 == i || randomParticle2 == randomParticle1);
-
 				velocity[i] += motherSwarm->mutationWeight * motherSwarm->getRandomFactor() * 
 					( motherSwarm->particles[randomParticle1].position[i] - motherSwarm->particles[randomParticle2].position[i]);
 			}
