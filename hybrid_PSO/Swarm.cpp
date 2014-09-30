@@ -11,7 +11,11 @@ Swarm::Swarm(void)
 	, randomGenerator(std::mt19937(random()))
 {
 	//swarm settings
+<<<<<<< HEAD
 	size = 10;
+=======
+	size = 20;
+>>>>>>> origin/master
 	iterations = 20000;
 	//solution range
 	min_x = -100;
@@ -23,11 +27,17 @@ Swarm::Swarm(void)
 	cognitiveWeight = 1.49618;
 	socialWeight = 1.49618;
 	//hybrid part settings
+<<<<<<< HEAD
 	mutationWeight = 0.5;
 	crossoverRatio = 0.9;
 	mutate = false;
 	//benchmark function
 	functionNumber = 5;
+=======
+	mutationWeight = 0.005;
+	crossoverRatio = 0.95;
+	mutate = true;
+>>>>>>> origin/master
 }
 
 Swarm::~Swarm(void)
