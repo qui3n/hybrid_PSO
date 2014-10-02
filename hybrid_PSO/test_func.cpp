@@ -127,115 +127,87 @@ void test_func(double *x, double *f, int nx, int mx,int func_num)
 		{
 		case 1:	
 			sphere_func(&x[i*nx],&f[i],nx,OShift,M,0);
-			f[i]+=-1400.0;
 			break;
 		case 2:	
 			ellips_func(&x[i*nx],&f[i],nx,OShift,M,1);
-			f[i]+=-1300.0;
 			break;
 		case 3:	
 			bent_cigar_func(&x[i*nx],&f[i],nx,OShift,M,1);
-			f[i]+=-1200.0;
 			break;
 		case 4:	
 			discus_func(&x[i*nx],&f[i],nx,OShift,M,1);
-			f[i]+=-1100.0;
 			break;
 		case 5:
 			dif_powers_func(&x[i*nx],&f[i],nx,OShift,M,0);
-			f[i]+=-1000.0;
 			break;
 		case 6:
 			rosenbrock_func(&x[i*nx],&f[i],nx,OShift,M,1);
-			f[i]+=-900.0;
 			break;
 		case 7:	
 			schaffer_F7_func(&x[i*nx],&f[i],nx,OShift,M,1);
-			f[i]+=-800.0;
 			break;
 		case 8:	
 			ackley_func(&x[i*nx],&f[i],nx,OShift,M,1);
-			f[i]+=-700.0;
 			break;
 		case 9:	
 			weierstrass_func(&x[i*nx],&f[i],nx,OShift,M,1);
-			f[i]+=-600.0;
 			break;
 		case 10:	
 			griewank_func(&x[i*nx],&f[i],nx,OShift,M,1);
-			f[i]+=-500.0;
 			break;
 		case 11:	
 			rastrigin_func(&x[i*nx],&f[i],nx,OShift,M,0);
-			f[i]+=-400.0;
 			break;
 		case 12:	
 			rastrigin_func(&x[i*nx],&f[i],nx,OShift,M,1);
-			f[i]+=-300.0;
 			break;
 		case 13:	
 			step_rastrigin_func(&x[i*nx],&f[i],nx,OShift,M,1);
-			f[i]+=-200.0;
 			break;
 		case 14:	
 			schwefel_func(&x[i*nx],&f[i],nx,OShift,M,0);
-			f[i]+=-100.0;
 			break;
 		case 15:	
 			schwefel_func(&x[i*nx],&f[i],nx,OShift,M,1);
-			f[i]+=100.0;
 			break;
 		case 16:	
 			katsuura_func(&x[i*nx],&f[i],nx,OShift,M,1);
-			f[i]+=200.0;
 			break;
 		case 17:	
 			bi_rastrigin_func(&x[i*nx],&f[i],nx,OShift,M,0);
-			f[i]+=300.0;
 			break;
 		case 18:	
 			bi_rastrigin_func(&x[i*nx],&f[i],nx,OShift,M,1);
-			f[i]+=400.0;
 			break;
 		case 19:	
 			grie_rosen_func(&x[i*nx],&f[i],nx,OShift,M,1);
-			f[i]+=500.0;
 			break;
 		case 20:	
 			escaffer6_func(&x[i*nx],&f[i],nx,OShift,M,1);
-			f[i]+=600.0;
 			break;
 		case 21:	
 			cf01(&x[i*nx],&f[i],nx,OShift,M,1);
-			f[i]+=700.0;
 			break;
 		case 22:	
 			cf02(&x[i*nx],&f[i],nx,OShift,M,0);
-			f[i]+=800.0;
 			break;
 		case 23:	
 			cf03(&x[i*nx],&f[i],nx,OShift,M,1);
-			f[i]+=900.0;
 			break;
 		case 24:	
 			cf04(&x[i*nx],&f[i],nx,OShift,M,1);
-			f[i]+=1000.0;
 			break;
 		case 25:	
 			cf05(&x[i*nx],&f[i],nx,OShift,M,1);
-			f[i]+=1100.0;
 			break;
 		case 26:
 			cf06(&x[i*nx],&f[i],nx,OShift,M,1);
-			f[i]+=1200.0;
 			break;
 		case 27:
 			cf07(&x[i*nx],&f[i],nx,OShift,M,1);
-			f[i]+=1300.0;
 			break;
 		case 28:
 			cf08(&x[i*nx],&f[i],nx,OShift,M,1);
-			f[i]+=1400.0;
 			break;
 		default:
 			printf("\nError: There are only 28 test functions in this test suite!\n");

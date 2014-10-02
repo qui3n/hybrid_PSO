@@ -11,33 +11,23 @@ Swarm::Swarm(void)
 	, randomGenerator(std::mt19937(random()))
 {
 	//swarm settings
-<<<<<<< HEAD
-	size = 10;
-=======
-	size = 20;
->>>>>>> origin/master
-	iterations = 20000;
+	size = 30;
+	iterations = 10000;
 	//solution range
 	min_x = -100;
 	max_x = 100;
-	dimension = 2;
+	dimension = 10;
 	max_velocity = 50;
 	//PSO settings
 	inertiaWeight = 0.7298;
 	cognitiveWeight = 1.49618;
 	socialWeight = 1.49618;
 	//hybrid part settings
-<<<<<<< HEAD
-	mutationWeight = 0.5;
-	crossoverRatio = 0.9;
-	mutate = false;
-	//benchmark function
-	functionNumber = 5;
-=======
 	mutationWeight = 0.005;
-	crossoverRatio = 0.95;
+	crossoverRatio = 0.9;
 	mutate = true;
->>>>>>> origin/master
+	//benchmark function
+	functionNumber = 10;
 }
 
 Swarm::~Swarm(void)
@@ -58,8 +48,6 @@ void Swarm::run()
 	}
 	for(currentIteration=0; currentIteration<iterations; currentIteration++)
 	{
-		forcedMutantIndex = getRandomIndex();
-
 		for(int i=0; i<size; i++)
 		{
 			particles[i].update();
@@ -71,18 +59,6 @@ void Swarm::run()
 	delete[] fitness;
 	delete[] swarmBest;
 }
-
-/*
-double Swarm::getFitness(Particle* p)
-{
-	double fitness = 0;
-	for(int i=0; i<dimension; i++)
-	{
-		fitness += pow((p->position[i] - 20),2);
-	}
-	return sqrt(fitness);
-}
-*/
 
 double Swarm::getFitness(Particle* p)
 {

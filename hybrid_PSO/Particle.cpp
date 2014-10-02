@@ -70,13 +70,15 @@ void Particle::update()
 			if(motherSwarm->mutate)
 			{
 				velocity[i] += motherSwarm->mutationWeight * motherSwarm->getRandomFactor() * 
-					( motherSwarm->particles[randomParticle1].position[i] - motherSwarm->particles[randomParticle2].position[i]);
+					(motherSwarm->particles[randomParticle1].position[i] - motherSwarm->particles[randomParticle2].position[i]);
+					//((motherSwarm->particles[randomParticle1].position[i] - motherSwarm->particles[randomParticle2].position[i])/2 - position[i]);
 			}
 			// -------------------------------------
 
 			if(abs(velocity[i]) > motherSwarm->max_velocity)
 			{
 				velocity[i] = _copysign(motherSwarm->max_velocity, velocity[i]);
+				//std::cout << "not so fast! \n";
 			}
 		}
 		
@@ -88,10 +90,12 @@ void Particle::update()
 		if(position[i] < motherSwarm->min_x)
 		{
 			position[i] = motherSwarm->min_x;
+			//std::cout << "boing >> \n";
 		}
 		if(position[i] > motherSwarm->max_x)
 		{
 			position[i] = motherSwarm->max_x;
+			//std::cout << "<< boing \n";
 		}
 	}
 

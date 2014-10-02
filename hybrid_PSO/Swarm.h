@@ -35,7 +35,8 @@ public:
 	Particle* particles;
 
 	bool mutate;
-	int forcedMutantIndex;
+
+	int functionNumber;
 
 private:
 	double* fitness;
@@ -43,6 +44,4 @@ private:
 	//random stuff
 	std::random_device random;
     std::mt19937 randomGenerator;
-
-	int functionNumber;
 };
