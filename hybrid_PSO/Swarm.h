@@ -14,6 +14,7 @@ public:
 	double getRandomVelocity();
 	double getRandomFactor();
 	int getRandomIndex();
+	int getRandomDimensionIndex();
 
 	int dimension;
 	int min_x, max_x, max_velocity;

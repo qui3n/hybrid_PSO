@@ -91,3 +91,9 @@ int Swarm::getRandomIndex()
 	std::uniform_int_distribution<int> validIndexDistribution(0, size-1);
 	return validIndexDistribution(randomGenerator);
 }
+
+int Swarm::getRandomDimensionIndex()
+{
+	std::uniform_int_distribution<int> validIndexDistribution(0, dimension-1);
+	return validIndexDistribution(randomGenerator);
+}
