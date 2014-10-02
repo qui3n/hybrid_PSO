@@ -4,12 +4,13 @@
 int _tmain(int argc, _TCHAR* argv[])
 {
 	Swarm swarm;
+
 	int num = 0;
 	double bestFitness[28];
-	while(num <= 27)
 	double sumFitness = 0;
 	int i = 1;
-	while(1)
+
+	while(num <= 27)
 	{
 		bestFitness[num] = swarm.swarmBestFitness;
 		num++;
