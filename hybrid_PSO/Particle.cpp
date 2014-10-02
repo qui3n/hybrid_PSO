@@ -57,10 +57,12 @@ void Particle::update()
 			randomParticle2 = motherSwarm->getRandomIndex();
 		}while(randomParticle2 == index || randomParticle2 == randomParticle1);
 	}
-	// -------------------------------------
+	// ------------------------------------
+
+	int forcedUpdateIndex = motherSwarm->getRandomDimensionIndex();
 	for(int i=0; i<motherSwarm->dimension; i++)
 	{
-		if(motherSwarm->crossoverRatio > motherSwarm->getRandomFactor() || !motherSwarm->mutate)
+		if(motherSwarm->getRandomFactor() < motherSwarm->crossoverRatio || i == forcedUpdateIndex || !motherSwarm->mutate)
 		{
 			velocity[i] *= motherSwarm->inertiaWeight;
 			velocity[i] += motherSwarm->cognitiveWeight * motherSwarm->getRandomFactor() * ( bestPosition[i] - position[i] );
@@ -70,7 +72,8 @@ void Particle::update()
 			if(motherSwarm->mutate)
 			{
 				velocity[i] += motherSwarm->mutationWeight * motherSwarm->getRandomFactor() * 
-					( motherSwarm->particles[randomParticle1].position[i] - motherSwarm->particles[randomParticle2].position[i]);
+					((motherSwarm->particles[randomParticle1].position[i] + motherSwarm->particles[randomParticle2].position[i])/2 - position[i]);
+					//( motherSwarm->particles[randomParticle1].position[i] - motherSwarm->particles[randomParticle2].position[i]);
 			}
 			// -------------------------------------
 

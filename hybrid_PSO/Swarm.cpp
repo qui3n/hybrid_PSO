@@ -11,33 +11,23 @@ Swarm::Swarm(void)
 	, randomGenerator(std::mt19937(random()))
 {
 	//swarm settings
-<<<<<<< HEAD
-	size = 10;
-=======
-	size = 20;
->>>>>>> origin/master
-	iterations = 20000;
+	size = 30;
+	iterations = 10000;
 	//solution range
 	min_x = -100;
 	max_x = 100;
-	dimension = 2;
+	dimension = 10;
 	max_velocity = 50;
 	//PSO settings
 	inertiaWeight = 0.7298;
 	cognitiveWeight = 1.49618;
 	socialWeight = 1.49618;
 	//hybrid part settings
-<<<<<<< HEAD
-	mutationWeight = 0.5;
-	crossoverRatio = 0.9;
-	mutate = false;
-	//benchmark function
-	functionNumber = 5;
-=======
 	mutationWeight = 0.005;
-	crossoverRatio = 0.95;
+	crossoverRatio = 0.9;
 	mutate = true;
->>>>>>> origin/master
+	//benchmark function
+	functionNumber = 26;
 }
 
 Swarm::~Swarm(void)
@@ -113,5 +103,11 @@ double Swarm::getRandomFactor()
 int Swarm::getRandomIndex()
 {
 	std::uniform_int_distribution<int> validIndexDistribution(0, size-1);
+	return validIndexDistribution(randomGenerator);
+}
+
+int Swarm::getRandomDimensionIndex()
+{
+	std::uniform_int_distribution<int> validIndexDistribution(0, dimension-1);
 	return validIndexDistribution(randomGenerator);
 }
