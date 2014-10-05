@@ -25,7 +25,7 @@ Swarm::Swarm(void)
 	//hybrid part settings
 	mutationWeight = 0.005;
 	crossoverRatio = 0.9;
-	mutate = true;
+	mutate = false;
 	//benchmark function
 	functionNumber = 10;
 }
@@ -53,7 +53,7 @@ void Swarm::run()
 			particles[i].update();
 		}
 	}
-	std::cout << "Final GLOBAL best! " << swarmBestFitness << "\n";
+	//std::cout << "Final GLOBAL best! " << swarmBestFitness << "\n";
 
 	delete[] particles;
 	delete[] fitness;
@@ -62,7 +62,7 @@ void Swarm::run()
 
 double Swarm::getFitness(Particle* p)
 {
-	test_func(p->position, fitness, dimension, 1, functionNumber); //l'ultimo int è il numero della funzione [1-28]
+	test_func(p->position, fitness, dimension, 1, functionNumber);
 
 	return fitness[0];
 }
