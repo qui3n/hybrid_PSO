@@ -22,10 +22,9 @@ Swarm::Swarm(void)
 	inertiaWeight = 0.7298;
 	cognitiveWeight = 1.49618;
 	socialWeight = 1.49618;
-	//hybrid part settings
+	//DE settings
 	mutationWeight = 0.005;
 	crossoverRatio = 0.9;
-	mutate = false;
 	//benchmark function
 	functionNumber = 10;
 }
@@ -36,21 +35,25 @@ Swarm::~Swarm(void)
 
 void Swarm::run()
 {
-	swarmBest = new double[dimension];
+	trialPSOParticlePosition = new double[dimension];
+	trialPSOParticleVelocity = new double[dimension];
+	trialDEParticle = new double[dimension];
 	particles = new Particle[size];
 	fitness = new double;
+
+	swarmBest = new double[dimension];
 	swarmBestFitness = std::numeric_limits<double>::max();
 	currentIteration = -1;
 
 	for(int i=0; i<size; i++)
 	{
-		particles[i].init(this, i);
+		initParticle(particles[i]);
 	}
 	for(currentIteration=0; currentIteration<iterations; currentIteration++)
 	{
 		for(int i=0; i<size; i++)
 		{
-			particles[i].update();
+			updateParticle(particles[i], i);
 		}
 	}
 	//std::cout << "Final GLOBAL best! " << swarmBestFitness << "\n";
@@ -58,11 +61,14 @@ void Swarm::run()
 	delete[] particles;
 	delete[] fitness;
 	delete[] swarmBest;
+	delete[] trialPSOParticlePosition;
+	delete[] trialPSOParticleVelocity;
+	delete[] trialDEParticle;
 }
 
-double Swarm::getFitness(Particle* p)
+double Swarm::getFitness(Particle& p)
 {
-	test_func(p->position, fitness, dimension, 1, functionNumber);
+	test_func(p.position, fitness, dimension, 1, functionNumber);
 
 	return fitness[0];
 }
@@ -96,4 +102,115 @@ int Swarm::getRandomDimensionIndex()
 {
 	std::uniform_int_distribution<int> validIndexDistribution(0, dimension-1);
 	return validIndexDistribution(randomGenerator);
+}
+
+void Swarm::copyArray(double* src, double* dest)
+{
+	for(int i = 0; i < this->dimension; i++)
+	{
+		dest[i] = src[i];
+	}
+}
+
+void Swarm::updateParticle(Particle& p, int index)
+{
+	copyArray(p.position, trialPSOParticlePosition);
+	copyArray(p.velocity, trialPSOParticleVelocity);
+	copyArray(p.position, trialDEParticle);
+
+	// PSO
+	for(int i=0; i<dimension; i++)
+	{
+		trialPSOParticleVelocity[i] *= inertiaWeight;
+		trialPSOParticleVelocity[i] += cognitiveWeight * getRandomFactor() * ( p.bestPosition[i] - p.position[i] );
+		trialPSOParticleVelocity[i] += socialWeight * getRandomFactor() * ( swarmBest[i] - p.position[i] );
+	}
+	for(int i=0; i<dimension; i++)
+	{
+		trialPSOParticlePosition[i] += trialPSOParticleVelocity[i];
+		if(trialPSOParticlePosition[i] < min_x)
+		{
+			trialPSOParticlePosition[i] = min_x;
+		}
+		if(trialPSOParticlePosition[i] > max_x)
+		{
+			trialPSOParticlePosition[i] = max_x;
+		}
+	}
+
+	// DE
+	int randomParticle1, randomParticle2;
+	do
+	{
+		randomParticle1 = getRandomIndex();
+	}while(randomParticle1 == index);
+
+	do
+	{
+		randomParticle2 = getRandomIndex();
+	}while(randomParticle2 == index || randomParticle2 == randomParticle1);
+	for(int i=0; i<dimension; i++)
+	{
+		if(getRandomFactor() < crossoverRatio)
+		{
+			trialDEParticle[i] += getRandomFactor() * mutationWeight * ( particles[randomParticle1].position[i] - particles[randomParticle2].position[i] );
+		}
+	}
+
+	// Cross-Over
+	for(int i=0; i<dimension; i++)
+	{
+		double r = getRandomFactor();
+		if(r < 0.75)
+		{
+			p.position[i] = trialPSOParticlePosition[i];
+		}else 
+		if(r < 0.9)
+		{
+			p.position[i] = trialDEParticle[i];
+		}
+	}
+	
+	/* PSO Standard
+	for(int i=0; i<dimension; i++)
+	{
+		p.position[i] = trialPSOParticlePosition[i];
+	}
+	*/
+
+	updateBest(p);
+}
+
+void Swarm::updateBest(Particle& p)
+{
+	double newFitness = getFitness(p);
+	if(newFitness < p.bestFitness)
+	{
+		p.bestFitness = newFitness;
+		copyArray(p.position, p.bestPosition);
+		//std::cout << "New LOCAL best! " << p->bestFitness << "\n";
+		if(p.bestFitness < swarmBestFitness)
+		{
+			swarmBestFitness = p.bestFitness;
+			copyArray(p.bestPosition, swarmBest);
+			//std::cout << "New GLOBAL best! " << p.bestFitness << " (" << currentIteration << ") \n";
+		}
+	}
+}
+
+void Swarm::initParticle(Particle& p)
+{
+	p.position = new double[dimension];
+	p.bestPosition = new double[dimension];
+	p.velocity = new double[dimension];
+
+	p.bestFitness = std::numeric_limits<double>::max( );
+
+	for (int i = 0; i < dimension; i++) 
+	{
+		p.position[i] = getRandomPosition();
+		p.velocity[i] = getRandomVelocity();
+	} 
+
+	updateBest(p);
 }

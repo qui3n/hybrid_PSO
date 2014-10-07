@@ -16,7 +16,7 @@ int _tmain(int argc, _TCHAR* argv[])
 		{
 			swarm.functionNumber = num+1;
 			swarm.run();
-			if(swarm.swarmBestFitness < 200)
+			//if(swarm.swarmBestFitness < 200)
 			{
 				bestFitness[num] += swarm.swarmBestFitness;
 				successNumber[num]++;

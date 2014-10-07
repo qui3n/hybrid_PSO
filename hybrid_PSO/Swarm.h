@@ -9,7 +9,7 @@ public:
 	Swarm(void);
 	~Swarm(void);
 	void run();
-	double getFitness(Particle* p);
+	double getFitness(Particle& p);
 	double getRandomPosition();
 	double getRandomVelocity();
 	double getRandomFactor();
@@ -35,14 +35,19 @@ public:
 
 	Particle* particles;
 
-	bool mutate;
-
 	int functionNumber;
 
 private:
-	double* fitness;
+	void updateParticle(Particle& p, int index);
+	void copyArray(double* src, double* dest);
+	void initParticle(Particle& p);
+	void updateBest(Particle& p);
 
-	//random stuff
+	double* fitness;
+	double* trialPSOParticlePosition;
+	double* trialPSOParticleVelocity;
+	double* trialDEParticle;
+
 	std::random_device random;
     std::mt19937 randomGenerator;
 };

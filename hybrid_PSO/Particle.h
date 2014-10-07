@@ -16,14 +16,5 @@ public:
 
 	Particle();
 	~Particle(void);
-	void init(Swarm* swarm, int);
-	void update();
-
-private:
-	void Particle::copyArray(double* src, double* dest);
-	void Particle::checkBest();
-
-	Swarm* motherSwarm;
-	int index;
 };
 
