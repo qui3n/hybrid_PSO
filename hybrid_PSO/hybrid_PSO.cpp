@@ -1,18 +1,34 @@
 #include "stdafx.h"
 #include "Swarm.h"
 #include <windows.h>
+#include <ctime>
+#include <string>
 
 int _tmain(int argc, _TCHAR* argv[])
 {		
 	Swarm swarm;
-	int iter = 1;
+	int iter = 0;
+	int const maxIter = 500;
 	double bestFitness[28] = {0};
 	int successNumber[28] = {0};
 
-	std::ofstream log;
-	log.open("log.txt");
+	std::time_t rawtime;
+    std::tm* timeinfo;
+    char buffer [80];
 
-	for(int k=0; k<1; k++)
+    std::time(&rawtime);
+    timeinfo = std::localtime(&rawtime);
+	std::strftime(buffer,80,"%Y_%m_%d-%H_%M_%S",timeinfo);
+    std::puts(buffer);
+
+	std::ofstream log;
+	std::string filename = "logs_", directory = "benchmark logs/";
+	filename += buffer;
+	filename += "_HPSOv2";
+	filename += ".txt";
+	log.open(directory + filename);
+
+	for(int k=0; k<maxIter; ++iter, k++)
 	{
 		int num = 0;
 		while(num <= 27)
@@ -32,8 +48,6 @@ int _tmain(int argc, _TCHAR* argv[])
 		{
 			std::cout << "function " << i+1 << ": \t(" << successNumber[i] << ")\t" << ( successNumber[i] != 0 ? (bestFitness[i] / successNumber[i]) : -1 ) << "\n";
 		}
-
-		iter++;
 	}
 
 	log << "iteration " << iter << ":\tsuccess\taverage \n";
