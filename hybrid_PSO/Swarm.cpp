@@ -17,7 +17,7 @@ Swarm::Swarm(void)
 	min_x = -100;
 	max_x = 100;
 	dimension = 10;
-	max_velocity = 50;
+	max_velocity = 40;
 	//PSO settings
 	inertiaWeight = 0.7298;
 	cognitiveWeight = 1.49618;
