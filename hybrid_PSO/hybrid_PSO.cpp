@@ -9,7 +9,10 @@ int _tmain(int argc, _TCHAR* argv[])
 	double bestFitness[28] = {0};
 	int successNumber[28] = {0};
 
-	while(1)
+	std::ofstream log;
+	log.open("log.txt");
+
+	for(int k=0; k<1; k++)
 	{
 		int num = 0;
 		while(num <= 27)
@@ -32,5 +35,13 @@ int _tmain(int argc, _TCHAR* argv[])
 
 		iter++;
 	}
+
+	log << "iteration " << iter << ":\tsuccess\taverage \n";
+	for(int i=0; i<28; i++)
+	{
+		log << "function " << i+1 << ": \t" << successNumber[i] << "\t" << ( successNumber[i] != 0 ? (bestFitness[i] / successNumber[i]) : -1 ) << "\n";
+	}
+	log.close();
+
 	return 0;
 }

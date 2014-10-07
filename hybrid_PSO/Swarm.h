@@ -2,6 +2,10 @@
 class Particle;
 #include "Particle.h"
 #include <random>
+#include <iostream>
+#include <math.h>
+#include <limits>
+#include <fstream>
 
 class Swarm
 {

@@ -161,7 +161,7 @@ void Swarm::updateParticle(Particle& p, int index)
 	for(int i=0; i<dimension; i++)
 	{
 		double r = getRandomFactor();
-		if(r < 0.75)
+		if(r < 0.7)
 		{
 			p.position[i] = trialPSOParticlePosition[i];
 		}else 

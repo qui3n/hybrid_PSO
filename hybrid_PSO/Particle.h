@@ -1,9 +1,6 @@
 #pragma once
 class Swarm;
 #include "Swarm.h"
-#include <iostream>
-#include <math.h>
-#include <limits>
 
 class Particle
 {
