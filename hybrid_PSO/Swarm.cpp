@@ -157,26 +157,22 @@ void Swarm::updateParticle(Particle& p, int index)
 		}
 	}
 
-	// Cross-Over
+	/* 
+	// HPSOv3
 	for(int i=0; i<dimension; i++)
 	{
-		double r = getRandomFactor();
-		if(r < 0.7)
-		{
-			p.position[i] = trialPSOParticlePosition[i];
-		}else 
-		if(r < 0.9)
-		{
-			p.position[i] = trialDEParticle[i];
-		}
-	}
-	
-	/* PSO Standard
-	for(int i=0; i<dimension; i++)
-	{
-		p.position[i] = trialPSOParticlePosition[i];
+		double newPosition = 0.9*trialPSOParticlePosition[i] + 0.1*trialDEParticle[i];
+		p.velocity[i] = newPosition - p.position[i];
+		p.position[i] = newPosition;
 	}
 	*/
+	// PSO
+	for(int i=0; i<dimension; i++)
+	{
+		p.velocity[i] = trialPSOParticleVelocity[i];
+		p.position[i] = trialPSOParticlePosition[i];
+	}
+
 
 	updateBest(p);
 }
