@@ -8,13 +8,12 @@ int _tmain(int argc, _TCHAR* argv[])
 {		
 	Swarm swarm;
 	int iter = 0;
-	int const maxIter = 5;
+	int const maxIter = 10;
 	double bestFitness[28] = {0};
 	int successNumber[28] = {0};
 
 	for(int k=0; k<maxIter; ++iter, k++)
 	{
-		iter++;
 		for(int num=0; num<28; num++)
 		{
 			swarm.functionNumber = num+1;
