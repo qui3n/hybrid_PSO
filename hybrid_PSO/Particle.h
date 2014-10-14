@@ -10,6 +10,7 @@ public:
 
 	double* bestPosition;
 	double bestFitness;
+	double latestFitness;
 
 	Particle();
 	~Particle(void);

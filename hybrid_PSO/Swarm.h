@@ -14,6 +14,7 @@ public:
 	~Swarm(void);
 	void run();
 	double getFitness(Particle& p);
+	double getFitness(double* position);
 	double getRandomPosition();
 	double getRandomVelocity();
 	double getRandomFactor();
@@ -51,6 +52,8 @@ private:
 	double* trialPSOParticlePosition;
 	double* trialPSOParticleVelocity;
 	double* trialDEParticle;
+	double* trialPosition;
+	double* trialVelocity;
 
 	std::random_device random;
     std::mt19937 randomGenerator;

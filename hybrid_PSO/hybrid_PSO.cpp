@@ -12,8 +12,9 @@ int _tmain(int argc, _TCHAR* argv[])
 	double bestFitness[28] = {0};
 	int successNumber[28] = {0};
 
-	for(int k=0; k<maxIter; ++iter, k++)
+	for(int k=0; k<maxIter; k++)
 	{
+		iter++;
 		for(int num=0; num<28; num++)
 		{
 			swarm.functionNumber = num+1;
@@ -43,9 +44,9 @@ int _tmain(int argc, _TCHAR* argv[])
 	std::puts(buffer);
 
 	std::ofstream log;
-	std::string filename = "logs_", directory = "logs/";
+	std::string filename = "logs_", directory = "c:/logs/";
 	filename += buffer;
-	filename += "_PSO_";
+	filename += "_HPSOv2_";
 	filename += std::to_string(static_cast<unsigned long long>(maxIter));
 	filename += ".txt";
 	log.open(directory + filename);

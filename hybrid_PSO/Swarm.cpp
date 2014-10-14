@@ -38,6 +38,8 @@ void Swarm::run()
 	trialPSOParticlePosition = new double[dimension];
 	trialPSOParticleVelocity = new double[dimension];
 	trialDEParticle = new double[dimension];
+	trialPosition = new double[dimension];
+	trialVelocity = new double[dimension];
 	particles = new Particle[size];
 	fitness = new double;
 
@@ -72,6 +74,14 @@ double Swarm::getFitness(Particle& p)
 
 	return fitness[0];
 }
+
+double Swarm::getFitness(double* position)
+{
+	test_func(position, fitness, dimension, 1, functionNumber);
+
+	return fitness[0];
+}
+
 
 
 double Swarm::getRandomPosition()
@@ -157,24 +167,53 @@ void Swarm::updateParticle(Particle& p, int index)
 		}
 	}
 
-	/* 
-	// HPSOv3
+	// Cross-Over
 	for(int i=0; i<dimension; i++)
 	{
-		double newPosition = 0.9*trialPSOParticlePosition[i] + 0.1*trialDEParticle[i];
-		p.velocity[i] = newPosition - p.position[i];
-		p.position[i] = newPosition;
+		double r = getRandomFactor();
+		double oldPosition = p.position[i];
+
+		if(r < 0.9)
+		{
+			trialPosition[i] = trialPSOParticlePosition[i];
+		}else 
+		{
+			trialPosition[i] = trialDEParticle[i];
+		}
+
+		trialVelocity[i] = p.position[i] - oldPosition;
 	}
-	*/
-	// PSO
-	for(int i=0; i<dimension; i++)
+	
+	// Selection
+	double newFitness = getFitness(trialPosition);
+	if(newFitness < p.bestFitness)
 	{
-		p.velocity[i] = trialPSOParticleVelocity[i];
-		p.position[i] = trialPSOParticlePosition[i];
+		p.bestFitness = newFitness;
+		copyArray(p.position, p.bestPosition);
+		//std::cout << "New LOCAL best! " << p->bestFitness << "\n";
+		if(p.bestFitness < swarmBestFitness)
+		{
+			swarmBestFitness = p.bestFitness;
+			copyArray(p.bestPosition, swarmBest);
+			//std::cout << "New GLOBAL best! " << p.bestFitness << " (" << currentIteration << ") \n";
+		}
+		copyArray(trialPosition, p.position);
+		copyArray(trialVelocity, p.velocity);
+		p.latestFitness = newFitness;
+	}else
+	{
+		double delta = (newFitness - p.latestFitness) / p.latestFitness;
+		if(delta <= 0.01)
+		{
+			//std::cout << "HA FUNZIONATO \n";
+			copyArray(trialPosition, p.position);
+			copyArray(trialVelocity, p.velocity);
+			p.latestFitness = newFitness;
+		}else
+		{
+			//std::cout << "NON HA FUNZIONATO \n";
+		}
 	}
-
-
-	updateBest(p);
 }
 
 void Swarm::updateBest(Particle& p)
@@ -192,6 +231,7 @@ void Swarm::updateBest(Particle& p)
 			//std::cout << "New GLOBAL best! " << p.bestFitness << " (" << currentIteration << ") \n";
 		}
 	}
+	p.latestFitness = newFitness;
 }
 
 void Swarm::initParticle(Particle& p)
