@@ -46,7 +46,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	std::ofstream log;
 	std::string filename = "logs_", directory = "c:/logs/";
 	filename += buffer;
-	filename += "_HPSOv2_";
+	filename += "_HPSOv3_";
 	filename += std::to_string(static_cast<unsigned long long>(maxIter));
 	filename += ".txt";
 	log.open(directory + filename);
