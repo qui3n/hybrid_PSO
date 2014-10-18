@@ -81,6 +81,11 @@ void Swarm::postRun()
 	delete[] trialDEParticle;
 }
 
+double Swarm::getFitness()
+{
+	return getFitness(particles[currentParticleIndex]);
+}
+
 double Swarm::getFitness(Particle& p)
 {
 	test_func(p.position, fitness, dimension, 1, functionNumber);
@@ -172,14 +177,111 @@ void Swarm::setUpdateStrategy(UpdateStrategy ups)
 {
 	switch(ups)
 	{
-		case(HPSOv3):
-			Swarm::updateStrategy = HPSOv3updateParticle;
+	case(PSO):
+		Swarm::updateStrategy = PSOupdateParticle;
 		break;
-
-		default:
-			Swarm::updateStrategy = HPSOv3updateParticle;
+	case(HPSO) :
+		Swarm::updateStrategy = HPSOupdateParticle;
+		break;
+	case(HPSOv2) :
+		Swarm::updateStrategy = HPSOv2updateParticle;
+		break;
+	case(HPSOv3) :
+		Swarm::updateStrategy = HPSOv3updateParticle;
+		break;
+	case(HPSORand) :
+		Swarm::updateStrategy = HPSORandupdateParticle;
+		break;
+	default:
+		Swarm::updateStrategy = PSOupdateParticle;
 		break;
 	}
+}
+
+void Swarm::PSOupdateParticle()
+{
+	for (int i = 0; i<dimension; i++)
+	{
+		particles[currentParticleIndex].velocity[i] *= inertiaWeight;
+		particles[currentParticleIndex].velocity[i] += cognitiveWeight * getRandomFactor() * (particles[currentParticleIndex].bestPosition[i] - particles[currentParticleIndex].position[i]);
+		particles[currentParticleIndex].velocity[i] += socialWeight * getRandomFactor() * (swarmBest[i] - particles[currentParticleIndex].position[i]);
+
+		if (abs(particles[currentParticleIndex].velocity[i]) > max_velocity)
+		{
+			particles[currentParticleIndex].velocity[i] = _copysign(max_velocity, particles[currentParticleIndex].velocity[i]);
+		}
+	}
+
+	for (int i = 0; i<dimension; i++)
+	{
+		particles[currentParticleIndex].position[i] += particles[currentParticleIndex].velocity[i];
+		if (particles[currentParticleIndex].position[i] < min_x)
+		{
+			particles[currentParticleIndex].position[i] = min_x;
+		}
+		if (particles[currentParticleIndex].position[i] > max_x)
+		{
+			particles[currentParticleIndex].position[i] = max_x;
+		}
+	}
+	updateBest(particles[currentParticleIndex]);
+}
+
+void Swarm::HPSOupdateParticle()
+{
+	int randomParticle1, randomParticle2;
+	if (true)
+	{
+		do
+		{
+			randomParticle1 = getRandomIndex();
+		} while (randomParticle1 == currentParticleIndex);
+
+		do
+		{
+			randomParticle2 = getRandomIndex();
+		} while (randomParticle2 == currentParticleIndex || randomParticle2 == randomParticle1);
+	}
+
+	int forcedUpdateIndex = getRandomDimensionIndex();
+	for (int i = 0; i<dimension; i++)
+	{
+		if (getRandomFactor() < crossoverRatio || i == forcedUpdateIndex) // OCIO
+		{
+			particles[currentParticleIndex].velocity[i] *= inertiaWeight;
+			particles[currentParticleIndex].velocity[i] += cognitiveWeight * getRandomFactor() * (particles[currentParticleIndex].bestPosition[i] - particles[currentParticleIndex].position[i]);
+			particles[currentParticleIndex].velocity[i] += socialWeight * getRandomFactor() * (swarmBest[i] - particles[currentParticleIndex].position[i]);
+
+			particles[currentParticleIndex].velocity[i] += mutationWeight * getRandomFactor() *
+				(particles[randomParticle1].position[i] - particles[randomParticle2].position[i]);
+			//((particles[randomParticle1].position[i] - particles[randomParticle2].position[i])/2 - position[i]);
+
+			if (abs(particles[currentParticleIndex].velocity[i]) > max_velocity)
+			{
+				particles[currentParticleIndex].velocity[i] = _copysign(max_velocity, particles[currentParticleIndex].velocity[i]);
+			}
+		}
+	}
+
+	for (int i = 0; i<dimension; i++)
+	{
+		particles[currentParticleIndex].position[i] += particles[currentParticleIndex].velocity[i];
+		if (particles[currentParticleIndex].position[i] < min_x)
+		{
+			particles[currentParticleIndex].position[i] = min_x;
+		}
+		if (particles[currentParticleIndex].position[i] > max_x)
+		{
+			particles[currentParticleIndex].position[i] = max_x;
+		}
+	}
+
+	updateBest(particles[currentParticleIndex]);
+}
+
+void Swarm::HPSOv2updateParticle()
+{
+
 }
 
 void Swarm::HPSOv3updateParticle()
@@ -274,4 +376,110 @@ void Swarm::HPSOv3updateParticle()
 			//std::cout << "NON HA FUNZIONATO \n";
 		}
 	}
+}
+
+void Swarm::HPSORandupdateParticle()
+{
+	if (getRandomFactor() < 0.1)
+	{
+		{
+			copyArray(particles[currentParticleIndex].position, trialPSOParticlePosition);
+			copyArray(particles[currentParticleIndex].velocity, trialPSOParticleVelocity);
+
+			double oldIntertiaWeight = particles[currentParticleIndex]._inertiaWeight;
+			double oldCognitiveWeight = particles[currentParticleIndex]._cognitiveWeight;
+			double oldSocialWeight = particles[currentParticleIndex]._socialWeight;
+			double oldMutationWeight = particles[currentParticleIndex]._mutationWeight;
+
+			reweight();
+
+			int randomParticle1, randomParticle2;
+			if (true)
+			{
+				do
+				{
+					randomParticle1 = getRandomIndex();
+				} while (randomParticle1 == currentParticleIndex);
+
+				do
+				{
+					randomParticle2 = getRandomIndex();
+				} while (randomParticle2 == currentParticleIndex || randomParticle2 == randomParticle1);
+			}
+
+			int forcedUpdateIndex = getRandomDimensionIndex();
+			for (int i = 0; i<dimension; i++)
+			{
+				if (getRandomFactor() < crossoverRatio || i == forcedUpdateIndex) // OCIO
+				{
+					particles[currentParticleIndex].velocity[i] *= inertiaWeight;
+					particles[currentParticleIndex].velocity[i] += cognitiveWeight * getRandomFactor() * (particles[currentParticleIndex].bestPosition[i] - particles[currentParticleIndex].position[i]);
+					particles[currentParticleIndex].velocity[i] += socialWeight * getRandomFactor() * (swarmBest[i] - particles[currentParticleIndex].position[i]);
+
+					particles[currentParticleIndex].velocity[i] += mutationWeight * getRandomFactor() *
+						(particles[randomParticle1].position[i] - particles[randomParticle2].position[i]);
+
+					if (abs(particles[currentParticleIndex].velocity[i]) > max_velocity)
+					{
+						particles[currentParticleIndex].velocity[i] = _copysign(max_velocity, particles[currentParticleIndex].velocity[i]);
+					}
+				}
+			}
+
+			for (int i = 0; i<dimension; i++)
+			{
+				particles[currentParticleIndex].position[i] += particles[currentParticleIndex].velocity[i];
+				if (particles[currentParticleIndex].position[i] < min_x)
+				{
+					particles[currentParticleIndex].position[i] = min_x;
+				}
+				if (particles[currentParticleIndex].position[i] > max_x)
+				{
+					particles[currentParticleIndex].position[i] = max_x;
+				}
+			}
+
+			double newFitness = getFitness();
+			if (newFitness < particles[currentParticleIndex].bestFitness)
+			{
+				particles[currentParticleIndex].bestFitness = newFitness;
+				copyArray(particles[currentParticleIndex].position, particles[currentParticleIndex].bestPosition);
+				//std::cout << "New LOCAL best! " << p->bestFitness << "\n";
+				if (particles[currentParticleIndex].bestFitness < swarmBestFitness)
+				{
+					swarmBestFitness = particles[currentParticleIndex].bestFitness;
+					copyArray(particles[currentParticleIndex].bestPosition, swarmBest);
+					//std::cout << "New GLOBAL best! " << p.bestFitness << " (" << currentIteration << ") \n";
+				}
+				particles[currentParticleIndex].latestFitness = newFitness;
+			}
+			else 
+			{
+				// revert the changes
+				copyArray(trialPSOParticlePosition, particles[currentParticleIndex].position);
+				copyArray(trialPSOParticleVelocity, particles[currentParticleIndex].velocity);
+
+				particles[currentParticleIndex]._inertiaWeight = oldIntertiaWeight;
+				particles[currentParticleIndex]._cognitiveWeight = oldCognitiveWeight;
+				particles[currentParticleIndex]._socialWeight = oldSocialWeight;
+				particles[currentParticleIndex]._mutationWeight = oldMutationWeight;
+			}
+		}
+	}
+	else
+	{
+		HPSOupdateParticle();
+	}
+}
+
+void Swarm::reweight()
+{
+	particles[currentParticleIndex]._cognitiveWeight = getRandomFactor();
+	particles[currentParticleIndex]._socialWeight = getRandomFactor();
+	particles[currentParticleIndex]._mutationWeight = getRandomFactor() / 100;
+
+	double scalingFactor = 4.1 / (particles[currentParticleIndex]._cognitiveWeight + particles[currentParticleIndex]._socialWeight + particles[currentParticleIndex]._mutationWeight);
+	particles[currentParticleIndex]._cognitiveWeight *= scalingFactor;
+	particles[currentParticleIndex]._socialWeight *= scalingFactor;
+	particles[currentParticleIndex]._mutationWeight *= scalingFactor;
 }

@@ -48,6 +48,7 @@ private:
 	void preRun();
 	void postRun();
 
+	double getFitness();
 	double getFitness(Particle& p);
 	double getFitness(double* position);
 	double getRandomPosition();
@@ -75,5 +76,10 @@ private:
     std::mt19937 randomGenerator;
 
 	//update strategies
+	void PSOupdateParticle();
+	void HPSOupdateParticle();
+	void HPSOv2updateParticle();
 	void HPSOv3updateParticle();
+	void HPSORandupdateParticle();
+	void reweight();
 };

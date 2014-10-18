@@ -14,5 +14,10 @@ public:
 
 	Particle();
 	~Particle(void);
+
+	double _inertiaWeight;
+	double _cognitiveWeight;
+	double _socialWeight;
+	double _mutationWeight;
 };
 
