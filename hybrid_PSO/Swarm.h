@@ -56,8 +56,6 @@ private:
 	int getRandomIndex();
 	int getRandomDimensionIndex();
 
-	void updateParticle();
-	void HPSOv3updateParticle();
 	void copyArray(double* src, double* dest);
 	void initParticle(Particle& p);
 	void updateBest(Particle& p);
@@ -75,4 +73,7 @@ private:
 
 	std::random_device random;
     std::mt19937 randomGenerator;
+
+	//update strategies
+	void HPSOv3updateParticle();
 };

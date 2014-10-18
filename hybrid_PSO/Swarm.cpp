@@ -30,10 +30,6 @@ Swarm::Swarm(void)
 
 	//set update strategy
 	updateStrategy = &Swarm::HPSOv3updateParticle;
-
-	void (Swarm::*fptr)() = &Swarm::HPSOv3updateParticle;
-	(*fptr)();
-
 }
 
 Swarm::~Swarm(void)
@@ -52,17 +48,12 @@ double Swarm::run()
 	{
 		for(currentParticleIndex=0; currentParticleIndex<size; currentParticleIndex++)
 		{
-			updateParticle();
+			(this->*updateStrategy)();
 		}
 	}
 	//std::cout << "Final GLOBAL best! " << swarmBestFitness << "\n";
 	postRun();
 	return swarmBestFitness;
-}
-
-void Swarm::updateParticle()
-{
-	//(*updateStrategy)();
 }
 
 void Swarm::preRun()
