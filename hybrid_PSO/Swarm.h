@@ -12,15 +12,8 @@ class Swarm
 public:
 	Swarm(void);
 	~Swarm(void);
-	void run();
-	double getFitness(Particle& p);
-	double getFitness(double* position);
-	double getRandomPosition();
-	double getRandomVelocity();
-	double getRandomFactor();
-	int getRandomIndex();
-	int getRandomDimensionIndex();
-
+	double run();
+	
 	int dimension;
 	int min_x, max_x, max_velocity;
 	int iterations;
@@ -42,11 +35,34 @@ public:
 
 	int functionNumber;
 
+	enum UpdateStrategy
+	{
+		PSO,
+		HPSO,
+		HPSOv2,
+		HPSOv3,
+		HPSORand
+	};
+
 private:
-	void updateParticle(Particle& p, int index);
+	void preRun();
+	void postRun();
+
+	double getFitness(Particle& p);
+	double getFitness(double* position);
+	double getRandomPosition();
+	double getRandomVelocity();
+	double getRandomFactor();
+	int getRandomIndex();
+	int getRandomDimensionIndex();
+
+	void updateParticle();
+	void HPSOv3updateParticle();
 	void copyArray(double* src, double* dest);
 	void initParticle(Particle& p);
 	void updateBest(Particle& p);
+	void (Swarm::*updateStrategy)();
+	void setUpdateStrategy(UpdateStrategy ups);
 
 	double* fitness;
 	double* trialPSOParticlePosition;
@@ -54,6 +70,8 @@ private:
 	double* trialDEParticle;
 	double* trialPosition;
 	double* trialVelocity;
+
+	int currentParticleIndex;
 
 	std::random_device random;
     std::mt19937 randomGenerator;
