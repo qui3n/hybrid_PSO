@@ -6,13 +6,25 @@ class Particle;
 #include <math.h>
 #include <limits>
 #include <fstream>
+#include <string>
+
+enum UpdateStrategy
+{
+	PSO,
+	HPSO,
+	HPSOv2,
+	HPSOv3,
+	HPSORand
+};
 
 class Swarm
 {
 public:
 	Swarm(void);
 	~Swarm(void);
+	void setUpdateStrategy(UpdateStrategy ups);
 	double run();
+	std::string toString();
 	
 	int dimension;
 	int min_x, max_x, max_velocity;
@@ -35,14 +47,6 @@ public:
 
 	int functionNumber;
 
-	enum UpdateStrategy
-	{
-		PSO,
-		HPSO,
-		HPSOv2,
-		HPSOv3,
-		HPSORand
-	};
 
 private:
 	void preRun();
@@ -59,9 +63,9 @@ private:
 
 	void copyArray(double* src, double* dest);
 	void initParticle(Particle& p);
+	void updateBest();
 	void updateBest(Particle& p);
 	void (Swarm::*updateStrategy)();
-	void setUpdateStrategy(UpdateStrategy ups);
 
 	double* fitness;
 	double* trialPSOParticlePosition;
@@ -76,6 +80,7 @@ private:
     std::mt19937 randomGenerator;
 
 	//update strategies
+	std::string updateStrategyName;
 	void PSOupdateParticle();
 	void HPSOupdateParticle();
 	void HPSOv2updateParticle();

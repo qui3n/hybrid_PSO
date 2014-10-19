@@ -38,6 +38,9 @@ Swarm::~Swarm(void)
 
 double Swarm::run()
 {
+	if (functionNumber == 2 || functionNumber == 3 || functionNumber == 4)
+		return -1;
+
 	preRun();
 
 	for(int i=0; i<size; i++)
@@ -138,6 +141,11 @@ void Swarm::copyArray(double* src, double* dest)
 	}
 }
 
+void Swarm::updateBest()
+{
+	updateBest(particles[currentParticleIndex]);
+}
+
 void Swarm::updateBest(Particle& p)
 {
 	double newFitness = getFitness(p);
@@ -178,22 +186,28 @@ void Swarm::setUpdateStrategy(UpdateStrategy ups)
 	switch(ups)
 	{
 	case(PSO):
-		Swarm::updateStrategy = PSOupdateParticle;
+		Swarm::updateStrategy = &Swarm::PSOupdateParticle;
+		Swarm::updateStrategyName = "PSO";
 		break;
 	case(HPSO) :
-		Swarm::updateStrategy = HPSOupdateParticle;
+		Swarm::updateStrategy = &Swarm::HPSOupdateParticle;
+		Swarm::updateStrategyName = "HPSO";
 		break;
 	case(HPSOv2) :
-		Swarm::updateStrategy = HPSOv2updateParticle;
+		Swarm::updateStrategy = &Swarm::HPSOv2updateParticle;
+		Swarm::updateStrategyName = "HPSOv2";
 		break;
 	case(HPSOv3) :
-		Swarm::updateStrategy = HPSOv3updateParticle;
+		Swarm::updateStrategy = &Swarm::HPSOv3updateParticle;
+		Swarm::updateStrategyName = "HPSOv3";
 		break;
 	case(HPSORand) :
-		Swarm::updateStrategy = HPSORandupdateParticle;
+		Swarm::updateStrategy = &Swarm::HPSORandupdateParticle;
+		Swarm::updateStrategyName = "HPSORand";
 		break;
 	default:
-		Swarm::updateStrategy = PSOupdateParticle;
+		Swarm::updateStrategy = &Swarm::PSOupdateParticle;
+		Swarm::updateStrategyName = "DEFAULT";
 		break;
 	}
 }
@@ -246,7 +260,7 @@ void Swarm::HPSOupdateParticle()
 	int forcedUpdateIndex = getRandomDimensionIndex();
 	for (int i = 0; i<dimension; i++)
 	{
-		if (getRandomFactor() < crossoverRatio || i == forcedUpdateIndex) // OCIO
+		if (getRandomFactor() < crossoverRatio || i == forcedUpdateIndex)
 		{
 			particles[currentParticleIndex].velocity[i] *= inertiaWeight;
 			particles[currentParticleIndex].velocity[i] += cognitiveWeight * getRandomFactor() * (particles[currentParticleIndex].bestPosition[i] - particles[currentParticleIndex].position[i]);
@@ -281,7 +295,67 @@ void Swarm::HPSOupdateParticle()
 
 void Swarm::HPSOv2updateParticle()
 {
+	copyArray(particles[currentParticleIndex].position, trialPSOParticlePosition);
+	copyArray(particles[currentParticleIndex].velocity, trialPSOParticleVelocity);
+	copyArray(particles[currentParticleIndex].position, trialDEParticle);
 
+	// PSO
+	for (int i = 0; i<dimension; i++)
+	{
+		trialPSOParticleVelocity[i] *= inertiaWeight;
+		trialPSOParticleVelocity[i] += cognitiveWeight * getRandomFactor() * (particles[currentParticleIndex].bestPosition[i] - particles[currentParticleIndex].position[i]);
+		trialPSOParticleVelocity[i] += socialWeight * getRandomFactor() * (swarmBest[i] - particles[currentParticleIndex].position[i]);
+	}
+	for (int i = 0; i<dimension; i++)
+	{
+		trialPSOParticlePosition[i] += trialPSOParticleVelocity[i];
+		if (trialPSOParticlePosition[i] < min_x)
+		{
+			trialPSOParticlePosition[i] = min_x;
+		}
+		if (trialPSOParticlePosition[i] > max_x)
+		{
+			trialPSOParticlePosition[i] = max_x;
+		}
+	}
+
+	// DE
+	int randomParticle1, randomParticle2;
+	do
+	{
+		randomParticle1 = getRandomIndex();
+	} while (randomParticle1 == currentParticleIndex);
+
+	do
+	{
+		randomParticle2 = getRandomIndex();
+	} while (randomParticle2 == currentParticleIndex || randomParticle2 == randomParticle1);
+	for (int i = 0; i<dimension; i++)
+	{
+		if (getRandomFactor() < crossoverRatio)
+		{
+			trialDEParticle[i] += getRandomFactor() * mutationWeight * (particles[randomParticle1].position[i] - particles[randomParticle2].position[i]);
+		}
+	}
+
+	// Cross-Over
+	for (int i = 0; i<dimension; i++)
+	{
+		double r = getRandomFactor();
+		double oldPosition = particles[currentParticleIndex].position[i];
+
+		if (r < 0.8)
+		{
+			particles[currentParticleIndex].position[i] = trialPSOParticlePosition[i];
+		}
+		else
+		{
+			particles[currentParticleIndex].position[i] = trialDEParticle[i];
+		}
+
+		particles[currentParticleIndex].velocity[i] = particles[currentParticleIndex].position[i] - oldPosition;
+	}
+	updateBest(particles[currentParticleIndex]);
 }
 
 void Swarm::HPSOv3updateParticle()
@@ -410,14 +484,12 @@ void Swarm::HPSORandupdateParticle()
 			int forcedUpdateIndex = getRandomDimensionIndex();
 			for (int i = 0; i<dimension; i++)
 			{
-				if (getRandomFactor() < crossoverRatio || i == forcedUpdateIndex) // OCIO
+				if (getRandomFactor() < crossoverRatio || i == forcedUpdateIndex)
 				{
-					particles[currentParticleIndex].velocity[i] *= inertiaWeight;
-					particles[currentParticleIndex].velocity[i] += cognitiveWeight * getRandomFactor() * (particles[currentParticleIndex].bestPosition[i] - particles[currentParticleIndex].position[i]);
-					particles[currentParticleIndex].velocity[i] += socialWeight * getRandomFactor() * (swarmBest[i] - particles[currentParticleIndex].position[i]);
-
-					particles[currentParticleIndex].velocity[i] += mutationWeight * getRandomFactor() *
-						(particles[randomParticle1].position[i] - particles[randomParticle2].position[i]);
+					particles[currentParticleIndex].velocity[i] *= particles[currentParticleIndex]._inertiaWeight;
+					particles[currentParticleIndex].velocity[i] += particles[currentParticleIndex]._cognitiveWeight * getRandomFactor() * (particles[currentParticleIndex].bestPosition[i] - particles[currentParticleIndex].position[i]);
+					particles[currentParticleIndex].velocity[i] += particles[currentParticleIndex]._socialWeight * getRandomFactor() * (swarmBest[i] - particles[currentParticleIndex].position[i]);
+					particles[currentParticleIndex].velocity[i] += particles[currentParticleIndex]._mutationWeight * getRandomFactor() * (particles[randomParticle1].position[i] - particles[randomParticle2].position[i]);
 
 					if (abs(particles[currentParticleIndex].velocity[i]) > max_velocity)
 					{
@@ -482,4 +554,9 @@ void Swarm::reweight()
 	particles[currentParticleIndex]._cognitiveWeight *= scalingFactor;
 	particles[currentParticleIndex]._socialWeight *= scalingFactor;
 	particles[currentParticleIndex]._mutationWeight *= scalingFactor;
+}
+
+std::string Swarm::toString()
+{
+	return updateStrategyName;
 }
