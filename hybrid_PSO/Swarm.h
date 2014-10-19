@@ -14,7 +14,9 @@ enum UpdateStrategy
 	HPSO,
 	HPSOv2,
 	HPSOv3,
-	HPSORand
+	HPSORand,
+	HPSONoVel,
+	DE
 };
 
 class Swarm
@@ -42,6 +44,7 @@ public:
 
 	double* swarmBest;
 	double swarmBestFitness;
+	int lastBestFoundAt;
 
 	Particle* particles;
 
@@ -60,6 +63,7 @@ private:
 	double getRandomFactor();
 	int getRandomIndex();
 	int getRandomDimensionIndex();
+	void setNewBest(double);
 
 	void copyArray(double* src, double* dest);
 	void initParticle(Particle& p);
@@ -81,10 +85,12 @@ private:
 
 	//update strategies
 	std::string updateStrategyName;
-	void PSOupdateParticle();
-	void HPSOupdateParticle();
-	void HPSOv2updateParticle();
-	void HPSOv3updateParticle();
-	void HPSORandupdateParticle();
+	void PSO();
+	void HPSO();
+	void HPSOv2();
+	void HPSOv3();
+	void HPSORand();
 	void reweight();
+	void DE();
+	void HPSONoVel();
 };

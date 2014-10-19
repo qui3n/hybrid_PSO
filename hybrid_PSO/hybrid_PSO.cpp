@@ -4,7 +4,7 @@
 #include <ctime>
 #include <thread>
 
-#define TEST_NUMBER (100)
+#define TEST_NUMBER (1)
 
 void runBenchmarkTests(UpdateStrategy, const int, const bool);
 
@@ -37,6 +37,14 @@ int main(int argc, char* argv[])
 	else if (!strcmp(argv[1], "hpsorand"))
 	{
 		runBenchmarkTests(HPSORand, TEST_NUMBER, true);
+	}
+	else if (!strcmp(argv[1], "de"))
+	{
+		runBenchmarkTests(DE, TEST_NUMBER, true);
+	}
+	else if (!strcmp(argv[1], "hpsonovel"))
+	{
+		runBenchmarkTests(HPSONoVel, TEST_NUMBER, true);
 	}
 	else 
 	{
@@ -94,7 +102,7 @@ void runBenchmarkTests(UpdateStrategy ups, const int maxIter, const bool loop)
 
 		std::time(&rawtime);
 		timeinfo = std::localtime(&rawtime);
-		std::strftime(buffer, 80, "_%d%m%y-%H%M%S", timeinfo);
+		std::strftime(buffer, 80, "_%y%m%d-%H%M%S", timeinfo);
 		std::puts(buffer);
 
 		std::ofstream log;
