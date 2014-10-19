@@ -4,65 +4,66 @@
 #include <ctime>
 #include <thread>
 
-#define TEST_NUMBER (1)
+#define DEFAULT_TEST_NUMBER (1)
 
 void runBenchmarkTests(UpdateStrategy, const int, const bool);
 
 int main(int argc, char* argv[])
 {	
+	int test_number = DEFAULT_TEST_NUMBER;
+	bool loop = false;
 	if (argc == 1)
 	{
 		std::cout << "Usage: " << argv[0] << " algorithm_name" << std::endl;
 		exit(1);
+	} 
+	else
+	{
+		if (argc > 2)
+		{
+			if (atoi(argv[2]) > 0)
+			{
+				test_number = atoi(argv[2]);
+			}
+		}
+		if (argc > 3)
+		{
+			(atoi(argv[3]) == 1) ? loop == true : loop == false;
+		}
 	}
-
-	std::cout << argv[1] << std::endl;
 
 	if (!strcmp(argv[1], "pso"))
 	{
-		runBenchmarkTests(PSO, TEST_NUMBER, true);
+		runBenchmarkTests(PSO, test_number, loop);
 	}
 	else if (!strcmp(argv[1], "hpso"))
 	{
-		runBenchmarkTests(HPSO, TEST_NUMBER, true);
+		runBenchmarkTests(HPSO, test_number, loop);
 	}
 	else if (!strcmp(argv[1], "hpsov2"))
 	{
-		runBenchmarkTests(HPSOv2, TEST_NUMBER, true);
+		runBenchmarkTests(HPSOv2, test_number, loop);
 	}
 	else if (!strcmp(argv[1], "hpsov3"))
 	{
-		runBenchmarkTests(HPSOv3, TEST_NUMBER, true);
+		runBenchmarkTests(HPSOv3, test_number, loop);
 	}
 	else if (!strcmp(argv[1], "hpsorand"))
 	{
-		runBenchmarkTests(HPSORand, TEST_NUMBER, true);
+		runBenchmarkTests(HPSORand, test_number, loop);
 	}
 	else if (!strcmp(argv[1], "de"))
 	{
-		runBenchmarkTests(DE, TEST_NUMBER, true);
+		runBenchmarkTests(DE, test_number, loop);
 	}
 	else if (!strcmp(argv[1], "hpsonovel"))
 	{
-		runBenchmarkTests(HPSONoVel, TEST_NUMBER, true);
+		runBenchmarkTests(HPSONoVel, test_number, loop);
 	}
 	else 
 	{
 		std::cout << "Invalid argument." << std::endl;
 	}
-
-	//std::thread tPSO(runBenchmarkTests, PSO, 1, true);
-	//std::thread tHPSO(runBenchmarkTests, HPSO, 1, true);
-	//std::thread tHPSOv2(runBenchmarkTests, HPSOv2, 100, true);
-	//std::thread tHPSOv3(runBenchmarkTests, HPSOv3, 100, true);
-	//std::thread tHPSORand(runBenchmarkTests, HPSORand, 100, true);
-
-	//tPSO.join();
-	//tHPSO.join();
-	//tHPSOv2.join();
-	//tHPSOv3.join();
-	//tHPSORand.join();
-
 	return 0;
 }
 
@@ -81,6 +82,11 @@ void runBenchmarkTests(UpdateStrategy ups, const int maxIter, const bool loop)
 		{
 			results[i] = new double[maxFunc]{-1};
 		}
+		double** conv = new double*[maxIter];
+		for (int i = 0; i < maxIter; ++i)
+		{
+			conv[i] = new double[maxFunc]{-1};
+		}
 
 		for (int func = 0; func < maxFunc; func++)
 		{
@@ -92,6 +98,7 @@ void runBenchmarkTests(UpdateStrategy ups, const int maxIter, const bool loop)
 
 				swarm.functionNumber = func + 1;
 				results[i][func] = swarm.run();
+				conv[i][func] = swarm.lastBestFoundAt;
 			}
 		}
 
@@ -118,6 +125,15 @@ void runBenchmarkTests(UpdateStrategy ups, const int maxIter, const bool loop)
 			for (int i = 0; i < maxIter; i++)
 			{
 				log << results[i][func] << "\t";
+			}
+			log << std::endl;
+		}
+		log << std::endl;
+		for (int func = 0; func < maxFunc; func++)
+		{
+			for (int i = 0; i < maxIter; i++)
+			{
+				log << conv[i][func] << "\t";
 			}
 			log << std::endl;
 		}

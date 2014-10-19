@@ -71,6 +71,7 @@ void Swarm::preRun()
 
 	swarmBest = new double[dimension];
 	currentIteration = -1;
+	lastBestFoundAt = -1;
 	setNewBest(std::numeric_limits<double>::max());
 }
 
@@ -660,5 +661,4 @@ void Swarm::HPSONoVel()
 			copyArray(particles[currentParticleIndex].bestPosition, swarmBest);
 		}
 	}
-	particles[currentParticleIndex].latestFitness = newFitness;
 }
