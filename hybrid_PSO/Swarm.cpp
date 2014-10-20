@@ -624,7 +624,8 @@ void Swarm::HPSONoVel()
 	{
 		if (getRandomFactor() < crossoverRatio || i == forcedUpdateIndex)
 		{
-			trialPSOParticleVelocity[i] += cognitiveWeight * getRandomFactor() * (particles[currentParticleIndex].bestPosition[i] - particles[currentParticleIndex].position[i]);
+			// parte da 0, non si ricorda della vecchia velocità
+			trialPSOParticleVelocity[i] = cognitiveWeight * getRandomFactor() * (particles[currentParticleIndex].bestPosition[i] - particles[currentParticleIndex].position[i]);
 			trialPSOParticleVelocity[i] += socialWeight * getRandomFactor() * (swarmBest[i] - particles[currentParticleIndex].position[i]);
 			trialPSOParticleVelocity[i] += mutationWeight * getRandomFactor() * (particles[randomParticle1].position[i] - particles[randomParticle2].position[i]);
 

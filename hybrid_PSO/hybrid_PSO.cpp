@@ -11,7 +11,7 @@ void runBenchmarkTests(UpdateStrategy, const int, const bool);
 int main(int argc, char* argv[])
 {	
 	int test_number = DEFAULT_TEST_NUMBER;
-	bool loop = false;
+	bool loop = true;
 	if (argc == 1)
 	{
 		std::cout << "Usage: " << argv[0] << " algorithm_name" << std::endl;
@@ -25,10 +25,6 @@ int main(int argc, char* argv[])
 			{
 				test_number = atoi(argv[2]);
 			}
-		}
-		if (argc > 3)
-		{
-			(atoi(argv[3]) == 1) ? loop == true : loop == false;
 		}
 	}
 
