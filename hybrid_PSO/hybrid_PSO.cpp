@@ -2,66 +2,66 @@
 #include "Swarm.h"
 #include <windows.h>
 #include <ctime>
-#include <thread>
+
 
 #define DEFAULT_TEST_NUMBER (1)
 
 void runBenchmarkTests(UpdateStrategy, const int, const bool);
 
-int main(int argc, char* argv[])
-{	
-	int test_number = DEFAULT_TEST_NUMBER;
-	bool loop = true;
-	if (argc == 1)
-	{
-		std::cout << "Usage: " << argv[0] << " algorithm_name" << std::endl;
-		exit(1);
-	} 
-	else
-	{
-		if (argc > 2)
-		{
-			if (atoi(argv[2]) > 0)
-			{
-				test_number = atoi(argv[2]);
-			}
-		}
-	}
-
-	if (!strcmp(argv[1], "pso"))
-	{
-		runBenchmarkTests(PSO, test_number, loop);
-	}
-	else if (!strcmp(argv[1], "hpso"))
-	{
-		runBenchmarkTests(HPSO, test_number, loop);
-	}
-	else if (!strcmp(argv[1], "hpsov2"))
-	{
-		runBenchmarkTests(HPSOv2, test_number, loop);
-	}
-	else if (!strcmp(argv[1], "hpsov3"))
-	{
-		runBenchmarkTests(HPSOv3, test_number, loop);
-	}
-	else if (!strcmp(argv[1], "hpsorand"))
-	{
-		runBenchmarkTests(HPSORand, test_number, loop);
-	}
-	else if (!strcmp(argv[1], "de"))
-	{
-		runBenchmarkTests(DE, test_number, loop);
-	}
-	else if (!strcmp(argv[1], "hpsonovel"))
-	{
-		runBenchmarkTests(HPSONoVel, test_number, loop);
-	}
-	else 
-	{
-		std::cout << "Invalid argument." << std::endl;
-	}
-	return 0;
-}
+//int main(int argc, char* argv[])
+//{	
+//	int test_number = DEFAULT_TEST_NUMBER;
+//	bool loop = true;
+//	if (argc == 1)
+//	{
+//		std::cout << "Usage: " << argv[0] << " algorithm_name" << std::endl;
+//		exit(1);
+//	} 
+//	else
+//	{
+//		if (argc > 2)
+//		{
+//			if (atoi(argv[2]) > 0)
+//			{
+//				test_number = atoi(argv[2]);
+//			}
+//		}
+//	}
+//
+//	if (!strcmp(argv[1], "pso"))
+//	{
+//		runBenchmarkTests(PSO, test_number, loop);
+//	}
+//	else if (!strcmp(argv[1], "hpso"))
+//	{
+//		runBenchmarkTests(HPSO, test_number, loop);
+//	}
+//	else if (!strcmp(argv[1], "hpsov2"))
+//	{
+//		runBenchmarkTests(HPSOv2, test_number, loop);
+//	}
+//	else if (!strcmp(argv[1], "hpsov3"))
+//	{
+//		runBenchmarkTests(HPSOv3, test_number, loop);
+//	}
+//	else if (!strcmp(argv[1], "hpsorand"))
+//	{
+//		runBenchmarkTests(HPSORand, test_number, loop);
+//	}
+//	else if (!strcmp(argv[1], "de"))
+//	{
+//		runBenchmarkTests(DE, test_number, loop);
+//	}
+//	else if (!strcmp(argv[1], "hpsonovel"))
+//	{
+//		runBenchmarkTests(HPSONoVel, test_number, loop);
+//	}
+//	else 
+//	{
+//		std::cout << "Invalid argument." << std::endl;
+//	}
+//	return 0;
+//}
 
 void runBenchmarkTests(UpdateStrategy ups, const int maxIter, const bool loop)
 {
