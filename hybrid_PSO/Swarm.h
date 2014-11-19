@@ -7,6 +7,8 @@ class Particle;
 #include <limits>
 #include <fstream>
 #include <string>
+#include "test_func.h"
+#include <SFML/Graphics.hpp>
 
 enum UpdateStrategy
 {
@@ -64,6 +66,19 @@ private:
 	int getRandomIndex();
 	int getRandomDimensionIndex();
 	void setNewBest(double);
+
+	void render();
+	sf::RenderWindow window;
+	sf::Texture texture;
+	sf::Sprite sprite;
+	sf::Vector2f scale;
+	bool ignorePlot;
+
+	void drawPlot();
+	void updatePlot();
+	void drawParticle(sf::RenderWindow &window, float x, float y, sf::Color color);
+	float Swarm::convertX(float x);
+	float Swarm::convertY(float y);
 
 	void copyArray(double* src, double* dest);
 	void initParticle(Particle& p);

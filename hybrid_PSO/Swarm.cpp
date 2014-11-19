@@ -1,6 +1,4 @@
 #include "Swarm.h"
-#include <limits>
-#include "test_func.h"
 
 void test_func(double*, double*, int, int,int);
 double *OShift,*M,*y,*z,*x_bound;;
@@ -9,14 +7,15 @@ int ini_flag,n_flag,func_flag;
 Swarm::Swarm(void)
 	: random()
 	, randomGenerator(std::mt19937(random()))
+	, window(sf::VideoMode(460, 360), "rendering...")
 {
 	//swarm settings
-	size = 30;
-	iterations = 10000;
+	size = 20;
+	iterations = 200;
 	//solution range
 	min_x = -100;
 	max_x = 100;
-	dimension = 10;
+	dimension = 2;
 	max_velocity = 40;
 	//PSO settings
 	inertiaWeight = 0.7298;
@@ -49,6 +48,7 @@ double Swarm::run()
 	}
 	for(currentIteration=0; currentIteration<iterations; currentIteration++)
 	{
+		render();
 		for(currentParticleIndex=0; currentParticleIndex<size; currentParticleIndex++)
 		{
 			(this->*updateStrategy)();
@@ -73,6 +73,8 @@ void Swarm::preRun()
 	currentIteration = -1;
 	lastBestFoundAt = -1;
 	setNewBest(std::numeric_limits<double>::max());
+
+	updatePlot();
 }
 
 void Swarm::postRun()
@@ -662,4 +664,69 @@ void Swarm::HPSONoVel()
 			copyArray(particles[currentParticleIndex].bestPosition, swarmBest);
 		}
 	}
+}
+
+void Swarm::drawParticle(sf::RenderWindow &window, float x, float y, sf::Color color)
+{
+	sf::CircleShape shape(2);
+	shape.setFillColor(color);
+	shape.setPosition(x, y);
+
+	if (window.isOpen())
+	{
+		window.draw(shape);
+	}
+}
+
+void Swarm::updatePlot()
+{
+	//std::string imgPath = "plots/6.png";
+	std::string imgPath = "plots/" + std::to_string(functionNumber) + ".png";
+	if (texture.loadFromFile(imgPath))
+	{
+		sprite.setTexture(texture, true);
+		scale = sf::Vector2f((float)window.getSize().x / texture.getSize().x, (float)window.getSize().y / texture.getSize().y);
+		sprite.setScale(scale);
+		ignorePlot = false;
+	}
+	else
+	{
+		scale = sf::Vector2f(1, 1);
+		ignorePlot = true;
+	}
+}
+
+void Swarm::drawPlot()
+{
+	if (!ignorePlot)
+	{
+		window.draw(sprite);
+	}
+}
+
+float Swarm::convertX(float x)
+{
+	return (x + 100) * ((window.getSize().x - ((30 + 10) * scale.x)) / 200);
+}
+
+float Swarm::convertY(float y)
+{
+	return window.getSize().y - ((y + 100) * ((window.getSize().y - ((6 + 16) * scale.y)) / 200));
+}
+
+void Swarm::render()
+{
+	window.clear();
+
+	drawPlot();
+	for (int i = 0; i < size; i++)
+	{
+		drawParticle(window, convertX(particles[i].position[0]), convertY(particles[i].position[1]), sf::Color::Blue);
+	}
+	drawParticle(window, convertX(swarmBest[0]), convertY(swarmBest[1]), sf::Color::Red);
+	//std::cout << swarmBestFitness << std::endl;
+
+	window.display();
+
+	sf::sleep(sf::milliseconds(500));
 }
